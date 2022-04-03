@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using SalesWebApp.Models.ViewModels;
 
 namespace SalesWebApp.Controllers
 {
@@ -17,7 +18,7 @@ namespace SalesWebApp.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            ViewData["Message"] = "sales web application created using asp.net core mvc";
 
             return View();
         }
