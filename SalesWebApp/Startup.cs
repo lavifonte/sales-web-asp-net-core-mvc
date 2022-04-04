@@ -41,6 +41,7 @@ namespace SalesWebApp
                     options.UseMySql(Configuration.GetConnectionString("SalesWebAppContext"), builder =>
 builder.MigrationsAssembly("SalesWebApp")));
 
+            // os services são configurados aqui
             services.AddScoped<SeedingService>();
 
             services.AddScoped<SellerServices>();
