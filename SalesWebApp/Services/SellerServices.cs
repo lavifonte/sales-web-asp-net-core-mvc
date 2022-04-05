@@ -23,7 +23,7 @@ namespace SalesWebApp.Services
             // retorna uma lista com todos os vendedores armazenados no banco de dados
         }
 
-        public void Inser(Seller obj)
+        public void Insert(Seller obj)
         {
             _context.Add(obj);
             _context.SaveChanges();

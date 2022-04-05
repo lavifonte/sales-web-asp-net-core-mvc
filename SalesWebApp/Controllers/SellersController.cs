@@ -35,7 +35,7 @@ namespace SalesWebApp.Controllers
         public IActionResult Create(Seller seller)
         {
             //ação de post para inserir novo vendedor à lista seller
-            _sellerServices.Inser(seller);
+            _sellerServices.Insert(seller);
             return RedirectToAction(nameof(Index));
         }
         
