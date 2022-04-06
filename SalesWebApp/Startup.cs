@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SalesWebApp.Data;
 using SalesWebApp.Services;
+using Microsoft.AspNetCore.Routing;
 
 namespace SalesWebApp
 {
@@ -43,10 +44,12 @@ builder.MigrationsAssembly("SalesWebApp")));
 
             // os services são configurados aqui
             services.AddScoped<SeedingService>();
-
             services.AddScoped<SellerServices>();
-
             services.AddScoped<DepartmentService>();
+            services.Configure<RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
