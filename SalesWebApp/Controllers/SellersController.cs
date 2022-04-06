@@ -7,6 +7,7 @@ using SalesWebApp.Services;
 using SalesWebApp.Models;
 using SalesWebApp.Models.ViewModels;
 using SalesWebApp.Services.Exceptions;
+using System.Diagnostics;
 
 namespace SalesWebApp.Controllers
 {
@@ -19,7 +20,7 @@ namespace SalesWebApp.Controllers
         {
             _sellerServices = sellerServices;
             _departmentService = departmentServices;
-            
+
         }
 
         public IActionResult Index()
@@ -33,7 +34,7 @@ namespace SalesWebApp.Controllers
         public IActionResult Create()
         {
             var departments = _departmentService.FindAll();
-            var viewModel = new SellerFormViewModel{ Departments = departments };
+            var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);
         }
 
@@ -45,19 +46,19 @@ namespace SalesWebApp.Controllers
             _sellerServices.Insert(seller);
             return RedirectToAction(nameof(Index));
         }
-        
+
         public IActionResult Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not provided" });
             }
 
             var obj = _sellerServices.FindById(id.Value);
 
-            if(obj == null)
+            if (obj == null)
             {
-                return NotFound();
+                return return RedirectToAction(nameof(Error), new { message = "ID not found" });
             }
 
             return View(obj);
@@ -73,16 +74,16 @@ namespace SalesWebApp.Controllers
 
         public IActionResult Details(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not provided" });
             }
 
             var obj = _sellerServices.FindById(id.Value);
 
-            if(obj == null)
+            if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not found" });
             }
 
             return View(obj);
@@ -92,14 +93,14 @@ namespace SalesWebApp.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not provided" });
             }
 
             var obj = _sellerServices.FindById(id.Value);
 
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not found" });
             }
             List<Department> departments = _departmentService.FindAll();
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
@@ -112,7 +113,7 @@ namespace SalesWebApp.Controllers
         {
             if (id != seller.Id)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "ID doesn't match" });
             }
 
             try
@@ -122,15 +123,21 @@ namespace SalesWebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            catch(NotFoundException)
+            catch (NotFoundException e)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
 
-            catch(DbConcurrencyException)
+            catch (DbConcurrencyException e)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
+        }
+
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel { Message = message, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier };
+            return View(viewModel);
         }
 
 
