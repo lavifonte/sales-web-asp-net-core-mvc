@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SalesWebApp.Services;
 using SalesWebApp.Models;
 using SalesWebApp.Models.ViewModels;
+using SalesWebApp.Services.Exceptions;
 
 namespace SalesWebApp.Controllers
 {
@@ -105,6 +106,32 @@ namespace SalesWebApp.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+            if (id != seller.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _sellerServices.Update(seller);
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            catch(NotFoundException)
+            {
+                return NotFound();
+            }
+
+            catch(DbConcurrencyException)
+            {
+                return BadRequest();
+            }
+        }
 
 
 
