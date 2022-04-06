@@ -58,7 +58,7 @@ namespace SalesWebApp.Controllers
 
             if (obj == null)
             {
-                return return RedirectToAction(nameof(Error), new { message = "ID not found" });
+                return RedirectToAction(nameof(Error), new { message = "ID not found" });
             }
 
             return View(obj);
