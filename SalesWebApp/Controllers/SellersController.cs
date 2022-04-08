@@ -23,30 +23,34 @@ namespace SalesWebApp.Controllers
 
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _sellerServices.FindAll();  // o método criado no sellerservices
+            var list = await _sellerServices.FindAllAsync();  // o método criado no sellerservices
 
             return View(list);
             // chama a ação para retornar a lista de sellers, encaminhando os dados para a view
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _departmentService.FindAll();
+            var departments = await _departmentService.FindAllAsync();
             var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
-            //ação de post para inserir novo vendedor à lista seller
-            _sellerServices.Insert(seller);
+            if (!ModelState.IsValid)
+            {
+                var departments = await _departmentService.FindAllAsync();
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);
+            }
+            await _sellerServices.InsertAsync(seller);
             return RedirectToAction(nameof(Index));
         }
-
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -111,6 +115,13 @@ namespace SalesWebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
+            if (!ModelState.IsValid)
+            {
+                var departments = _departmentService.FindAll();
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);
+            }
+
             if (id != seller.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "ID doesn't match" });
