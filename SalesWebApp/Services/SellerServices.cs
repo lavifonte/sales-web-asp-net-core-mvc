@@ -25,10 +25,10 @@ namespace SalesWebApp.Services
         // retorna uma lista com todos os vendedores armazenados no banco de dados
     }
 
-        public async Task InsertAsync
+        public async Task InsertAsync(Seller obj)
         {            
             _context.Add(obj);
-            await_context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task<Seller> FindByIdAsync(int id)
